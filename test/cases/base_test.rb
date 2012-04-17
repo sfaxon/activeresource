@@ -1139,14 +1139,6 @@ class BaseTest < ActiveSupport::TestCase
     product = Product.find(1)
     assert product.inventory.status == ActiveSupport::JSON.decode(@inventory)['status']
   end
-  
-  def test_has_one_associated_model_requires_prefix_param
-    Product.send(:has_one, :customer)
-    product = Product.find(1)
-    assert_raise ActiveResource::MissingPrefixParam do
-      product.customer
-    end
-  end
 
   def test_load_yaml_array
     assert_nothing_raised do

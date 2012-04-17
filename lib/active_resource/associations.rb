@@ -68,10 +68,6 @@ module ActiveResource::Associations
   # a request is sent to a singelton path under the current resource.
   # For example, if a Product class <tt>has_one :inventory</tt> calling <tt>Product#inventory</tt>
   # will generate a request on /product/:product_id/inventory.json.
-  # This requires that the associated class defines a prefix in order for the path to be built.
-  # In this case it would be: <tt>Inventory.prefix = "/product/:product_id/"</tt>.
-  # See the ActiveResource::Singleton::ClassMethods documentation for more information on setting a prefix.
-  # If the associated class does not have a prefix MissingPrefixParam will be raised.
   #
   def has_one(name, options = {})
     Builder::HasOne.build(self, name, options)
@@ -158,8 +154,6 @@ module ActiveResource::Associations
       elsif attributes.include?(method_name)
         attributes[method_name]
       else
-        raise(ActiveResource::MissingPrefixParam, "#{self.class} has_one :#{method_name} requires that #{association_model} has a prefix set") if '/' == association_model.prefix
-        association_model.send(:include, ActiveResource::Singleton) unless association_model.respond_to?(:singleton_name)
         instance_variable_set(ivar_name, association_model.find(:params => {:"#{self.class.element_name}_id" => self.id}))
       end
     end
